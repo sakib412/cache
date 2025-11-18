@@ -63,8 +63,14 @@ export default class CacheProvider {
         return [name, await store.entry().resolver(this.app)]
       })
 
+      /**
+       * Extract only valid BentoCache options, excluding 'stores' and other
+       * properties that should not be passed to BentoCache constructor
+       */
+      const { stores, default: defaultStore, ...bentoCacheOptions } = cacheConfig
+
       return new BentoCache({
-        ...cacheConfig,
+        ...bentoCacheOptions,
         emitter: emitter as any,
         default: cacheConfig.default,
         stores: Object.fromEntries(await Promise.all(resolvedStores)),
